@@ -7,9 +7,9 @@ import {checkUser} from "@/lib/checkUser";
 const Header=async ()=>{
   await checkUser();
     return <div className="fixed pt-0 w-full bg-white/80 backdrop-blur-md z-50 border-b">
-        <nav className="container mx-auto px-4 py-4 flex items-center justify-between">
+        <nav className="container mx-auto px-4 py-1 flex items-center justify-between">
             <Link href="/">
-            <Image src={"/logo-removebg-preview.png"} alt="wealth logo" height={60} width={200} className="h-14 w-auto object-contain"/>
+            <Image src={"/spend.jpg"} alt="wealth logo" height={56} width={200}  className="h-24   w-auto object-contain"    />
             </Link>
         <div className="flex items-center space-x-4">
           <SignedIn>
@@ -39,7 +39,7 @@ const Header=async ()=>{
               appearance={{
                 elements: {
                   // Increased size to w-20 h-20
-                  avatarBox: "w-12 h-12 ",
+                  avatarBox: "w-10 h-10 ",
                 },
               }}
             />

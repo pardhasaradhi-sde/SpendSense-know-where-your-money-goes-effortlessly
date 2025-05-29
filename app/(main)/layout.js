@@ -2,7 +2,7 @@ import React from 'react'
 
 const MainLayout = ({children}) => {
   return (
-    <div className='container mx-auto my-14'>{children}</div>
+    <div className='container mx-6 my-14'>{children}</div>
   )
 }
 

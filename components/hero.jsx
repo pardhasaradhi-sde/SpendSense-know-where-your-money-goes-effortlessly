@@ -1,12 +1,15 @@
-"use client";
-
+"use client"
 import React, { useEffect, useRef } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { useAuth } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 
 const HeroSection = () => {
   const imageRef = useRef(null);
+  const { isSignedIn } = useAuth();
+  const router = useRouter();
 
   useEffect(() => {
     const imageElement = imageRef.current;
@@ -37,11 +40,19 @@ const HeroSection = () => {
           analyze, and optimize your spending with real-time insights.
         </p>
         <div className="flex justify-center space-x-4">
-          <Link href="/dashboard">
-            <Button size="lg" className="px-8">
-              Get Started
-            </Button>
-          </Link>
+          <Button
+            size="lg"
+            className="px-8"
+            onClick={() => {
+              if (isSignedIn) {
+                router.push("/dashboard");
+              } else {
+                router.push("/sign-in");
+              }
+            }}
+          >
+            Get Started
+          </Button>
           <Link href="/">
             <Button size="lg" variant="outline" className="px-8">
               Watch Demo

@@ -1,3 +1,4 @@
+'use client'
 import HeroSection from "@/components/hero";
 import {
   featuresData,
@@ -9,8 +10,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { useAuth } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const { isSignedIn } = useAuth();
+  const router = useRouter();
   return (
     <div>
       <HeroSection />
@@ -102,14 +107,19 @@ export default function Home() {
             Join thousands of users who are already managing their finances
             smarter with Welth
           </p>
-          <Link href="/dashboard">
-            <Button
-              size="lg"
-              className="bg-white text-blue-600 hover:bg-blue-50 animate-bounce"
-            >
-              Start Free Trial
-            </Button>
-          </Link>
+          <Button
+            size="lg"
+            className="bg-white text-blue-600 hover:bg-blue-50 animate-bounce"
+            onClick={() => {
+              if (isSignedIn) {
+                router.push("/dashboard");
+              } else {
+                router.push("/sign-in");
+              }
+            }}
+          >
+            Start Free Trial
+          </Button>
         </div>
       </section>
     </div>

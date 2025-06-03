@@ -6,7 +6,6 @@ import { checkBudgetAlert, generateMonthlyReport, processRecurringTransaction, t
 export const { GET, POST, PUT } = serve({
   client: inngest,
   functions: [
-    checkBudgetAlert,
     triggerRecurringTransactions,
     processRecurringTransaction,
     generateMonthlyReport

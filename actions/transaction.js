@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { request } from "@arcjet/next";
 import aj from "@/lib/arcjet";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { checkAndSendBudgetAlert } from "./budget";
 const genAi = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const serializeAmount = (obj) => ({
   ...obj,
@@ -74,6 +75,10 @@ export async function createTransactions(data) {
       });
       return newTransaction;
     });
+    // Call budget alert after creating an expense
+    if (data.type === "EXPENSE") {
+      await checkAndSendBudgetAlert(user.clerkUserId, data.accountId);
+    }
     revalidatePath("/dashboard");
     revalidatePath("/account/${transaction.accountId}");
     return { success: true, data: serializeAmount(transaction) };

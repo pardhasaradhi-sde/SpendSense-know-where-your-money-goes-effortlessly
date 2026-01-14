@@ -4,6 +4,8 @@ import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 import { sendEmail } from "@/actions/sendEmails";
 import EmailTemplate from "@/emails/template";
+import { request } from "@arcjet/next";
+import aj from "@/lib/arcjet";
 
 export async function getCurrentBudget(accountId) {
   try{  
@@ -56,6 +58,20 @@ export async function updateBudget(amount) {
     if(!userId){
         throw new Error('Unauthorized');
     }
+
+    // Arcjet protection
+    const req = await request();
+    const decision = await aj.protect(req, {
+      userId,
+      requested: 1,
+    });
+    if (decision.isDenied()) {
+      if (decision.reason.isRateLimit()) {
+        throw new Error("Too many requests. Please try again later.");
+      }
+      throw new Error("Request blocked");
+    }
+
     const user=await db.user.findUnique({
         where:{
             clerkUserId:userId

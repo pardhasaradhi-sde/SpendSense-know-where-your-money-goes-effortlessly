@@ -2,6 +2,9 @@
 import {auth} from '@clerk/nextjs/server';
 import {db} from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
+import { request } from "@arcjet/next";
+import aj from "@/lib/arcjet";
+
 const serializeTransaction=(obj)=>{
     const serialized={...obj};
     if(obj.balance)
@@ -97,6 +100,20 @@ const serializeTransaction=(obj)=>{
     if(!userId){
         throw new Error('Unauthorized');
     }
+
+    // Arcjet protection
+    const req = await request();
+    const decision = await aj.protect(req, {
+      userId,
+      requested: transactionIds.length,
+    });
+    if (decision.isDenied()) {
+      if (decision.reason.isRateLimit()) {
+        throw new Error("Too many requests. Please try again later.");
+      }
+      throw new Error("Request blocked");
+    }
+
     const user=await db.user.findUnique({
         where:{
             clerkUserId:userId
